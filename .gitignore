@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+Procfile2
 # Distribution / packaging
 .Python
 env/
@@ -58,3 +58,4 @@ docs/_build/
 target/
 
 .idea/
+.env
