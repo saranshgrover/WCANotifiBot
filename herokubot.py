@@ -1,5 +1,6 @@
 import logging
 import os
+from dotenv import load_dotenv
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
@@ -17,8 +18,7 @@ def error(bot, update, error):
 
 if __name__ == "__main__":
     # Set these variable to the appropriate values
-    TOKEN = os.environ['TOKEN']
-    print("token is" + TOKEN)
+    TOKEN = os.getenv("TOKEN")
     NAME = "hidden-lake-02945"
 
     # Port is given by Heroku
