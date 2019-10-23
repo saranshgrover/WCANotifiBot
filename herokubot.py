@@ -5,11 +5,15 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 
 def start(bot, update):
-    update.effective_message.reply_text("Hi!")
+    update.effective_message.reply_text("Hello, I am the Comp Scheduler Bot. To be notified for a competition, run /schedule <CompID>")
 
 
 def echo(bot, update):
     update.effective_message.reply_text(update.effective_message.text)
+
+def schedule(update,context):
+    update.effective_message.reply_text(context.args)
+
 
 def error(bot, update, error):
     logger.warning('Update "%s" caused error "%s"', update, error)
@@ -33,6 +37,7 @@ if __name__ == "__main__":
     dp = updater.dispatcher
     # Add handlers
     dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CommandHandler('schedule',schedule,pass_args=True))
     dp.add_handler(MessageHandler(Filters.text, echo))
     dp.add_error_handler(error)
 
