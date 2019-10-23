@@ -12,7 +12,8 @@ def echo(bot, update):
     update.effective_message.reply_text(update.effective_message.text)
 
 def schedule(update,context):
-    update.effective_message.reply_text(context.args)
+    comp_id = " ".join(context.args)
+    update.message.reply_text("Fetching schedule for " + comp_id)
 
 
 def error(bot, update, error):
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     dp = updater.dispatcher
     # Add handlers
     dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(CommandHandler('schedule',schedule,pass_args=True))
+    dp.add_handler(CommandHandler('schedule',schedule))
     dp.add_handler(MessageHandler(Filters.text, echo))
     dp.add_error_handler(error)
 
