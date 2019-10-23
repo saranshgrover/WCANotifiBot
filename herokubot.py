@@ -12,8 +12,8 @@ def echo(bot, update):
     update.effective_message.reply_text(update.effective_message.text)
 
 def schedule(update,context):
-    comp_id = " ".join(context.args)
-    update.message.reply_text("Fetching schedule for " + comp_id)
+    #comp_id = " ".join(context.args)
+    update.message.reply_text("yousaidschedule")#"Fetching schedule for " + comp_id)
 
 
 def error(bot, update, error):
@@ -22,11 +22,11 @@ def error(bot, update, error):
 
 if __name__ == "__main__":
     # Set these variable to the appropriate values
-    TOKEN = os.environ.get('TOKEN')
+    TOKEN = os.environ.get('TOKEN','993159315:AAFA_cNylEFenK_X1_SwMKk0RjoCNGUkFpk')
     NAME = "hidden-lake-02945"
 
     # Port is given by Heroku
-    PORT = os.environ.get('PORT')
+    PORT = os.environ.get('PORT',8857)
 
     # Enable logging
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
