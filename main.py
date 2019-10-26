@@ -42,8 +42,9 @@ if __name__ == "__main__":
     if testing:
         updater.start_polling()
     else:
-        updater.start_webhook(listen="0.0.0.0",
+        updater.start_polling()
+        """updater.start_webhook(listen="0.0.0.0",
                             port=int(PORT),
                             url_path=TOKEN)
         updater.bot.setWebhook("https://{}.herokuapp.com/{}".format(NAME, TOKEN))
-        updater.idle()
+        updater.idle()"""
