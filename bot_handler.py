@@ -4,7 +4,7 @@ from telegram import InlineQueryResultArticle, InputTextMessageContent, Update
 import datetime
 import constants
 from comp_notif import comp_notif
-import dateutil.parser
+import dateutil.parser, dateutil.tz
 
 class bot_handler:
     """Class that handles the commands called by a user to the bot. Creates, maintains and updates
@@ -70,9 +70,13 @@ class bot_handler:
         Arguments:
             jobs_to_add {list} -- list of jobs
         """
+        n = 10
         for jobs in jobs_to_add:
-            job = self.jobs.run_once(comp_notif.job_callback,dateutil.parser.parse(jobs['startTime']),context=jobs)
+            time = dateutil.parser.parse(jobs['startTime'])
+            time = time.replace(tzinfo=None)
+            job = self.jobs.run_once(comp_notif.job_callback,n,context=jobs)
             comp_notif.add_job(job)
+            n+=10
     def notification(self,update,context):
         query = update.inline_query.query
         url = "https://www.worldcubeassociation.org/api/v0/competitions/" + query + "/schedule"

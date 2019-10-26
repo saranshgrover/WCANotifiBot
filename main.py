@@ -17,14 +17,16 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                         level=logging.INFO)
     logger = logging.getLogger(__name__)
-    # Create Instance of Bot Handler
-    handle = bot_handler(logger)
     # Set up the Updater
     updater = Updater(TOKEN,use_context=True)
+    # dispatcher
     dp = updater.dispatcher
+    # job queue
     jobs = updater.job_queue
+    # Create Instance of Bot Handler
+    handle = bot_handler(logger,updater,jobs)
     # Add handlers
-    start_handler = CommandHandler('start',handle.start,dp,jobs)
+    start_handler = CommandHandler('start',handle.start)
     #notification_hanlder = InlineQueryHandler(handle.notification)
     #dp.add_handler(notification_hanlder)
     dp.add_handler(start_handler)

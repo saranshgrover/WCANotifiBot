@@ -2,6 +2,7 @@ import requests
 import datetime
 import operator
 from telegram.ext import CallbackContext
+import telegram
 import constants
 import random
 class comp_notif:
@@ -20,16 +21,9 @@ class comp_notif:
     def job_callback(self,context: CallbackContext):
         job = context.job
         notif = job.context
-        if notif['activityCode'] == 'other-lunch':
-            self.announcement = constants.lunch_start
-        elif notif['activityCode'].startswith("other"):
-            self.announcement = constants.generic_announcement
-        elif notif['childActivites'] == []:
-            self.announcement = constants.event_start
-        else:
-            self.announcement = constants.group_start
-        text = random.choice(self.announcement).format(notif['name'])
-        context.bot.send_message(chat_id="@{}".format(self.competition_id),text=text)
+        announcement = constants.which_announcement(notif['activityCode'])
+        text = random.choice(announcement).format(notif['name'])
+        context.bot.send_message(chat_id="@{}".format(self.competition_id),text=text,parse_mode = telegram.ParseMode.MARKDOWN)
         self.jobs.remove(job)
 
 
