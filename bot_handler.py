@@ -1,6 +1,7 @@
 import requests
 from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters, InlineQueryHandler, JobQueue
 from telegram import InlineQueryResultArticle, InputTextMessageContent, Update
+import telegram
 import datetime
 import constants
 from comp_notif import comp_notif
@@ -12,7 +13,7 @@ class bot_handler:
     """
 
 
-    def __init__(self,logger,updater: Updater,jobs: JobQueue):
+    def __init__(self,logger,updater: Updater,jobs: JobQueue, testing: bool):
         """Initializer. Stores the logger globally and also creates an empty dictionary to store
         compeition ids and their respective comp_notif class instances.
         
@@ -22,8 +23,33 @@ class bot_handler:
         self.logger = logger
         self.jobs = jobs
         self.comps = dict()
+        self.testing = testing
 
-
+    def stop(self, update: Update, context: CallbackContext):
+        """Called to stop notifications for a competition.
+        
+        Arguments:
+            update {Update}
+            contet {CallbackContext}
+        """
+        if context.args == []:
+            self.reply(update,constants.stop_invalid_id)
+            return
+        query = context.args[0]
+        if query in self.comps:
+            self.comps.pop(query)
+            self.reply(update,constants.stop_removed_id.format(query))
+        else:
+            self.reply(update,constants.stop_invalid_id)
+        
+    def help(self,update: Update, context: CallbackContext):
+        """Returns a list of commands and instructions
+        
+        Arguments:
+            update {Update}
+            context {CallbackContext}
+        """
+        self.reply(update,constants.help_me)
     def reply(self, update: Update, text: str):
         """Sends a reply message to Update
         
@@ -31,7 +57,7 @@ class bot_handler:
             update {Update}
             text {str} -- [String to reply]
         """
-        update.message.reply_text(text)
+        return update.message.reply_text(text,parse_mode=telegram.ParseMode.MARKDOWN)
 
 
     def start(self,update: Update, context: CallbackContext):
@@ -43,6 +69,7 @@ class bot_handler:
             update {Update}
             context {CallbackContext}
         """
+        bot = context.bot
         if context.args == []:
             self.reply(update,constants.start_invalid_id)
             return
@@ -57,9 +84,17 @@ class bot_handler:
             self.reply(update,constants.start_invalid_id)
             return
         end_date = datetime.datetime.strptime(schedule["startDate"],"%Y-%m-%d") + datetime.timedelta(days=int(schedule["numberOfDays"])-1)
-        if(end_date<datetime.datetime.today()):
-            self.reply(update,constants.start_invalid_date)
+        if(datetime.timedelta(days=7)>end_date-datetime.datetime.today()<datetime.timedelta(days=-1)):
+            self.reply(update,constants.start_invalid_date) 
+            return
         compNotif = comp_notif(query,schedule)
+        try:
+            message = context.bot.send_message(chat_id="@{}".format(query),text="Welcome to {}. Settle down, you will be alerted when a new group starts. Courtesey of @wcanotifbot".format(query))
+            context.bot.pinChatMessage(chat_id="@{}".format(query),message_id=message.message_id)
+        except Exception as e:
+            print(e)
+            self.reply(update,constants.start_not_admin.format(query))
+            return
         self.comps[query] = compNotif
         self.add_jobs(compNotif.notifications,compNotif)
         self.reply(update,constants.start_notifcations.format(query))
@@ -74,7 +109,7 @@ class bot_handler:
         for jobs in jobs_to_add:
             time = dateutil.parser.parse(jobs['startTime'])
             time = time.replace(tzinfo=None)
-            job = self.jobs.run_once(comp_notif.job_callback,n,context=jobs)
+            job = self.jobs.run_once(comp_notif.job_callback,n if self.testing else time,context=jobs)
             comp_notif.add_job(job)
             n+=10
     def notification(self,update,context):
@@ -84,7 +119,6 @@ class bot_handler:
         schedule = res.json()
         if 'error' in schedule:
             return
-        print(schedule)
         results = list()
         results.append(
             InlineQueryResultArticle(

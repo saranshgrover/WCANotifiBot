@@ -4,10 +4,21 @@ import re
 wca_api_schedule_url ="https://www.worldcubeassociation.org/api/v0/competitions/{}/schedule"
 
 # Start Responses
-start_invalid_id = "/start requires a valid WCA Competition ID. Please enter one"
-start_already_begun = "Already started notifications for {}. Please use /stop to start again"
+start_description = "*/start Competition* : Starts notifications for the compeition with the ID that was passed in. All notifications will be sent to @CompetitionID channel. This bot needs to be added to the channel and be made an administrator"
+start_invalid_id = "/start requires a valid WCA Competition ID. Please enter one \n /help for more info"
+start_already_begun = "Already started notifications for {}. Please use /stop to start again \n /help for more info"
 start_notifcations = "Starting notifications for: {}"
-start_invalid_date = "This competition is over. Please enter a future or current competition only"
+start_invalid_date = "Cannot start notifications for competitions that are not set to start in 7 days. \n /help for more info"
+start_not_admin = "You have not added @wcanotifbot as an admin to @{} \n /help for more info"
+# Stop Responses
+
+stop_description = "*/stop CompetitionID* : Stop notifications for the competition with ID provided. You need to call /start before you call /stop on any ID."
+stop_invalid_id = "/stop requires a valid WCA Competition ID that has active notifications. Please enter one \n /help for more info"
+stop_removed_id = "Successfully stopped notifications for {}. toodles!"
+
+# Help Response
+
+help_me = "Welcome to the *WCA Notification Bot*. Here are a list of commands you can do: \n\n{}\n\n{}\n\n ".format(start_description,stop_description)
 
 # Names
 

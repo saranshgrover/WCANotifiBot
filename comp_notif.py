@@ -41,8 +41,6 @@ class comp_notif:
                     for childActivity in activity["childActivities"]:
                         self.notifications.append(childActivity)
         self.notifications.sort(key=operator.itemgetter('startTime'))
-        for notification in self.notifications:
-            print(notification['name'])
     
         
         

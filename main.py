@@ -10,7 +10,7 @@ if __name__ == "__main__":
     testing = False
     # Set these variable to the appropriate values
     TOKEN = os.environ.get('TOKEN',constants.name_test_token)
-    if(TOKEN==constants.name_test_token):
+    if(TOKEN==constants.name_test_token):  
         testing = True
     NAME = constants.name_heroku
     # Port is given by Heroku
@@ -27,12 +27,14 @@ if __name__ == "__main__":
     # job queue
     jobs = updater.job_queue
     # Create Instance of Bot Handler
-    handle = bot_handler(logger,updater,jobs)
+    handle = bot_handler(logger,updater,jobs,testing)
     # Add handlers
     start_handler = CommandHandler('start',handle.start)
-    #notification_hanlder = InlineQueryHandler(handle.notification)
-    #dp.add_handler(notification_hanlder)
+    stop_hanlder = CommandHandler('stop',handle.stop)
+    help_handler = CommandHandler('help',handle.help)
     dp.add_handler(start_handler)
+    dp.add_handler(stop_hanlder)
+    dp.add_handler(help_handler)
     dp.add_error_handler(handle.error)
 
     # Start the webhook
