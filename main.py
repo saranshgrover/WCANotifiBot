@@ -7,8 +7,11 @@ from bot_handler import bot_handler
 import constants
 
 if __name__ == "__main__":
+    testing = False
     # Set these variable to the appropriate values
     TOKEN = os.environ.get('TOKEN',constants.name_test_token)
+    if(TOKEN==constants.name_test_token):
+        testing = True
     NAME = constants.name_heroku
     # Port is given by Heroku
     PORT = os.environ.get('PORT',5500)
@@ -33,9 +36,12 @@ if __name__ == "__main__":
     dp.add_error_handler(handle.error)
 
     # Start the webhook
-    updater.start_polling()
-    """ updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=TOKEN)
-    updater.bot.setWebhook("https://{}.herokuapp.com/{}".format(NAME, TOKEN))
-    updater.idle() """
+    
+    if testing:
+        updater.start_polling()
+    else:
+        updater.start_webhook(listen="0.0.0.0",
+                            port=int(PORT),
+                            url_path=TOKEN)
+        updater.bot.setWebhook("https://{}.herokuapp.com/{}".format(NAME, TOKEN))
+        updater.idle()
